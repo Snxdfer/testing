@@ -650,7 +650,7 @@ animateGradient()
     Pin.Size = UDim2.new(0, 2, 0, 16)
     Pin.BorderSizePixel = 0
     Pin.BackgroundColor3 = Color3.fromRGB(208, 196, 252)
-    Pin.Parent = Tabs
+    Pin.Parent = Handler
     
     local UICorner = Instance.new('UICorner')
     UICorner.CornerRadius = UDim.new(1, 0)
@@ -816,15 +816,17 @@ animateGradient()
             if object == tab then
                 if object.BackgroundTransparency ~= 0.5 then
 task.defer(function()
-    local absoluteY = object.AbsolutePosition.Y
-    local relativeY = absoluteY - Tabs.AbsolutePosition.Y
+    local absoluteY = tab.AbsolutePosition.Y
+    local relativeY = absoluteY - Handler.AbsolutePosition.Y
 
-    local tabHeight = object.AbsoluteSize.Y
+    local tabHeight = tab.AbsoluteSize.Y
     local pinHeight = Pin.AbsoluteSize.Y
 
     local centeredY = relativeY + (tabHeight / 2) - (pinHeight / 2)
 
-    Pin.Position = UDim2.new(0.026, 0, 0, centeredY)
+    TweenService:Create(Pin, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {
+        Position = UDim2.new(0.026, 0, 0, centeredY)
+    }):Play()
 end)
 
                     TweenService:Create(object, TweenInfo.new(0.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
