@@ -819,13 +819,8 @@ task.defer(function()
     local absoluteY = object.AbsolutePosition.Y
     local relativeY = absoluteY - Tabs.AbsolutePosition.Y
 
-    local tabHeight = object.AbsoluteSize.Y
-    local pinHeight = Pin.AbsoluteSize.Y
-
-    local centeredY = relativeY + (tabHeight / 2) - (pinHeight / 2)
-
-    TweenService:Create(Pin, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
-        Position = UDim2.new(0.026, 0, 0, centeredY)
+    TweenService:Create(Pin, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {
+        Position = UDim2.new(0.026, 0, 0, relativeY + (object.AbsoluteSize.Y / 2) - (Pin.AbsoluteSize.Y / 2))
     }):Play()
 end)
 
@@ -2686,7 +2681,7 @@ end
     Button.MouseButton1Click:Connect(function()
         local click_sound = Instance.new("Sound")
         click_sound.SoundId = "rbxassetid://8816939097"
-        click_sound.Volume = 0.80
+        click_sound.Volume = 0.75
         click_sound.Parent = game:GetService("SoundService")
         click_sound:Play()
         Debris:AddItem(click_sound, 2)
