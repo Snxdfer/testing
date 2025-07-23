@@ -1089,7 +1089,7 @@ animateGradient()
             ModuleName.TextColor3 = Color3.fromRGB(208, 196, 252)
             ModuleName.TextTransparency = 0.20000000298023224
             if not settings.rich then
-                ModuleName.Text = settings.title or "Eskibidi"
+                ModuleName.Text = settings.title or "Module Name"
             else
                 ModuleName.RichText = true
                 ModuleName.Text = settings.richtext or "<font color='rgb(255,0,0)'>Nyrelia</font> user"
@@ -1437,7 +1437,7 @@ animateGradient()
                 Body.TextColor3 = Color3.fromRGB(180, 180, 180)
                 
                 if not settings.rich then
-                    Body.Text = settings.text or "Eskibidi"
+                    Body.Text = settings.text or "Text"
                 else
                     Body.RichText = true
                     Body.Text = settings.richtext or "<font color='rgb(255,0,0)'>Nyrelia</font> user"
@@ -1507,7 +1507,7 @@ animateGradient()
                 Body.TextColor3 = Color3.fromRGB(180, 180, 180)
             
                 if not settings.rich then
-                    Body.Text = settings.text or "Eskibidi" -- Default text
+                    Body.Text = settings.text or "Text" -- Default text
                 else
                     Body.RichText = true
                     Body.Text = settings.richtext or "<font color='rgb(255,0,0)'>Nyrelia</font> user" -- Default rich text
@@ -1538,7 +1538,7 @@ animateGradient()
 
                 function TextManager:Set(new_settings)
                     if not new_settings.rich then
-                        Body.Text = new_settings.text or "Eskibidi" -- Default text
+                        Body.Text = new_settings.text or "Text" -- Default text
                     else
                         Body.RichText = true
                         Body.Text = new_settings.richtext or "<font color='rgb(255,0,0)'>Nyrelia</font> user" -- Default rich text
@@ -1659,7 +1659,7 @@ animateGradient()
                 end
                 TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
                 TitleLabel.TextTransparency = 0.2
-                TitleLabel.Text = settings.title or "Eskibidi"
+                TitleLabel.Text = settings.title or "Title"
                 TitleLabel.Size = UDim2.new(0, 142, 0, 13)
                 TitleLabel.AnchorPoint = Vector2.new(0, 0.5)
                 TitleLabel.Position = UDim2.new(0, 0, 0.5, 0)
@@ -2258,16 +2258,16 @@ function ModuleManager:create_dropdown(settings: any)
 
             local CurrentTextGet = convertStringToTable(CurrentOption.Text);
 
-            optionEskibidi = "nil";
+            optionNyrelia = "nil";
             if typeof(option) ~= 'string' then
-                optionEskibidi = option.Name;
+                optionNyrelia = option.Name;
             else
-                optionEskibidi = option;
+                optionNyrelia = option;
             end;
 
             local found = false
             for i, v in pairs(CurrentTextGet) do
-                if v == optionEskibidi then
+                if v == optionNyrelia then
                     table.remove(CurrentTextGet, i);
                     break;
                 end
@@ -2623,7 +2623,7 @@ end
     Button.Name = "Button"
     Button.Text = ""
     Button.Size = UDim2.new(0, 207, 0, 24)
-    Button.BackgroundColor3 = Color3.fromRGB(65, 47, 81)
+    Button.BackgroundColor3 = Color3.fromRGB(87, 69, 110)
     Button.BackgroundTransparency = 0.1
     Button.BorderSizePixel = 0
     Button.AutoButtonColor = false
@@ -2635,7 +2635,7 @@ end
     UICorner.Parent = Button
 
     local Stroke = Instance.new("UIStroke")
-    Stroke.Color = Color3.fromRGB(95, 47, 122)
+    Stroke.Color = Color3.fromRGB(77, 55, 95)
     Stroke.Thickness = 1
     Stroke.Transparency = 0.5
     Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
@@ -2649,8 +2649,8 @@ end
     Title.BackgroundTransparency = 1
     Title.TextXAlignment = Enum.TextXAlignment.Left
     Title.TextColor3 = Color3.fromRGB(208, 196, 252)
-    Title.TextSize = 12
-    Title.Font = Enum.Font.GothamBold
+    Title.TextSize = 12.5
+    Title.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.SemiBold)
     Title.Parent = Button
 
     local ClickIcon = Instance.new("ImageLabel")
@@ -2665,20 +2665,20 @@ end
 
     Button.MouseEnter:Connect(function()
         TweenService:Create(Button, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {
-            BackgroundColor3 = Color3.fromRGB(77, 55, 95)
+            BackgroundColor3 = Color3.fromRGB(95, 77, 120)
         }):Play()
     end)
 
     Button.MouseLeave:Connect(function()
         TweenService:Create(Button, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {
-            BackgroundColor3 = Color3.fromRGB(65, 47, 81)
+            BackgroundColor3 = Color3.fromRGB(87, 69, 110)
         }):Play()
     end)
 
     Button.MouseButton1Click:Connect(function()
         local click_sound = Instance.new("Sound")
         click_sound.SoundId = "rbxassetid://8816939097"
-        click_sound.Volume = 1
+        click_sound.Volume = 0.85
         click_sound.Parent = game:GetService("SoundService")
         click_sound:Play()
         Debris:AddItem(click_sound, 2)
@@ -2698,7 +2698,7 @@ end
             task.wait(0.5)
             Title.Text = settings.title or "Click Me"
             TweenService:Create(Button, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {
-                BackgroundColor3 = Color3.fromRGB(65, 47, 81)
+                BackgroundColor3 = Color3.fromRGB(87, 69, 110)
             }):Play()
         else
             TweenService:Create(Button, TweenInfo.new(0.2, Enum.EasingStyle.Quad), {
@@ -2709,7 +2709,7 @@ end
             }):Play()
             task.wait(0.15)
             TweenService:Create(Button, TweenInfo.new(0.4, Enum.EasingStyle.Quad), {
-                BackgroundColor3 = Color3.fromRGB(65, 47, 81)
+                BackgroundColor3 = Color3.fromRGB(87, 69, 110)
             }):Play()
             TweenService:Create(Stroke, TweenInfo.new(0.4, Enum.EasingStyle.Quad), {
                 Transparency = 0.5
