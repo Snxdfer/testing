@@ -815,11 +815,19 @@ animateGradient()
 
             if object == tab then
                 if object.BackgroundTransparency ~= 0.5 then
-                    local offset = object.LayoutOrder * (0.113 / 1.3)
+task.defer(function()
+    local absoluteY = object.AbsolutePosition.Y
+    local relativeY = absoluteY - Tabs.AbsolutePosition.Y
 
-                    TweenService:Create(Pin, TweenInfo.new(0.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
-                        Position = UDim2.fromScale(0.026, 0.135 + offset)
-                    }):Play()    
+    local tabHeight = object.AbsoluteSize.Y
+    local pinHeight = Pin.AbsoluteSize.Y
+
+    local centeredY = relativeY + (tabHeight / 2) - (pinHeight / 2)
+
+    TweenService:Create(Pin, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
+        Position = UDim2.new(0.026, 0, 0, centeredY)
+    }):Play()
+end)
 
                     TweenService:Create(object, TweenInfo.new(0.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
                         BackgroundTransparency = 0.5
@@ -2678,7 +2686,7 @@ end
     Button.MouseButton1Click:Connect(function()
         local click_sound = Instance.new("Sound")
         click_sound.SoundId = "rbxassetid://8816939097"
-        click_sound.Volume = 0.85
+        click_sound.Volume = 0.80
         click_sound.Parent = game:GetService("SoundService")
         click_sound:Play()
         Debris:AddItem(click_sound, 2)
@@ -2696,7 +2704,7 @@ end
             Title.Text = "Callback Error"
             warn("Callback Error: " .. tostring(response))
             task.wait(0.5)
-            Title.Text = settings.title or "Click Me"
+            Title.Text = settings.title or "Click"
             TweenService:Create(Button, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {
                 BackgroundColor3 = Color3.fromRGB(87, 69, 110)
             }):Play()
