@@ -807,7 +807,10 @@ animateGradient()
         self._ui_loaded = true
     end
 
+    local SelectedTab = nil
     function self:update_tabs(tab: TextButton)
+        SelectedTab = tab
+        
         for index, object in Tabs:GetChildren() do
             if object.Name ~= 'Tab' then
                 continue
@@ -2686,7 +2689,7 @@ end
     Button.MouseButton1Click:Connect(function()
         local click_sound = Instance.new("Sound")
         click_sound.SoundId = "rbxassetid://8816939097"
-        click_sound.Volume = 0.75
+        click_sound.Volume = 0.65
         click_sound.Parent = game:GetService("SoundService")
         click_sound:Play()
         Debris:AddItem(click_sound, 2)
