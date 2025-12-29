@@ -1,5 +1,5 @@
 -- By 00Fazee 31/08/2025
--- Air Key System v1.1 (Scaled 1.5x) + Draggable (PC & Mobile)
+-- Air Key System v1.1 (Scaled 1.5x) + Draggable fix (PC & Mobile)
 
 function fontFix(arg)
 	return Font.new(arg.Family, arg.Weight, arg.Style)
@@ -352,48 +352,47 @@ function WhitelistCreate(titleText, descText, clipboardText)
 		mainGui:Destroy()
 	end
 
-	-- Draggable implementation (works on PC & Mobile)
+	-- Draggable implementation (fixed)
 	do
 		local dragging = false
-		local dragInput = nil
 		local dragStart = nil
 		local startPos = nil
 
-		local function update(input)
-			if not dragging then return end
-			local delta = input.Position - dragStart
-			-- keep scale the same, only adjust offset
-			mainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-		end
-
-		-- Start drag only when the input target is the mainFrame itself (prevents drag when interacting with buttons/textbox)
-		UserInputService.InputBegan:Connect(function(input, gameProcessed)
-			if gameProcessed then return end
+		-- Start drag when the mainFrame itself receives InputBegan.
+		-- This prevents starting a drag when interacting with children (buttons, textbox).
+		mainFrame.InputBegan:Connect(function(input)
 			if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-				-- input.Target is the GUI object that was clicked/touched
-				if input.Target == mainFrame then
-					dragging = true
-					dragStart = input.Position
-					startPos = mainFrame.Position
-					dragInput = input
-					-- For touch, InputChanged will be fired for the touch input; for mouse, InputChanged will be fired as well
-				end
+				dragging = true
+				dragStart = input.Position
+				startPos = mainFrame.Position
+
+				-- Stop dragging when this specific input ends
+				input.Changed:Connect(function()
+					if input.UserInputState == Enum.UserInputState.End then
+						dragging = false
+					end
+				end)
 			end
 		end)
 
+		-- Update position while dragging: listen for mouse movement (PC) or touch movement (mobile)
 		UserInputService.InputChanged:Connect(function(input)
-			if input == dragInput and dragging then
-				update(input)
+			if not dragging then return end
+			if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+				local delta = input.Position - dragStart
+				mainFrame.Position = UDim2.new(
+					startPos.X.Scale,
+					startPos.X.Offset + delta.X,
+					startPos.Y.Scale,
+					startPos.Y.Offset + delta.Y
+				)
 			end
 		end)
 
-		-- End dragging when input ends (mouse button up or touch end)
-		UserInputService.InputEnded:Connect(function(input, gameProcessed)
-			if input == dragInput then
+		-- Safety: ensure dragging ends on InputEnded events as well
+		UserInputService.InputEnded:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 				dragging = false
-				dragInput = nil
-				dragStart = nil
-				startPos = nil
 			end
 		end)
 	end
