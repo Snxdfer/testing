@@ -1,5 +1,5 @@
 -- By 00Fazee 31/08/2025
--- Air Key System v1.1 (Scaled 1.5x)
+-- Air Key System v1.1 (Scaled 1.5x) + Draggable (PC & Mobile)
 
 function fontFix(arg)
 	return Font.new(arg.Family, arg.Weight, arg.Style)
@@ -18,6 +18,8 @@ function createObject(className, properties)
 	obj.Parent = parentObj
 	return obj
 end
+
+local UserInputService = game:GetService("UserInputService")
 
 function WhitelistCreate(titleText, descText, clipboardText)
 	local existingGui = game.CoreGui:FindFirstChild('Rnd')
@@ -349,6 +351,53 @@ function WhitelistCreate(titleText, descText, clipboardText)
 		wait(0.3)
 		mainGui:Destroy()
 	end
+
+	-- Draggable implementation (works on PC & Mobile)
+	do
+		local dragging = false
+		local dragInput = nil
+		local dragStart = nil
+		local startPos = nil
+
+		local function update(input)
+			if not dragging then return end
+			local delta = input.Position - dragStart
+			-- keep scale the same, only adjust offset
+			mainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+		end
+
+		-- Start drag only when the input target is the mainFrame itself (prevents drag when interacting with buttons/textbox)
+		UserInputService.InputBegan:Connect(function(input, gameProcessed)
+			if gameProcessed then return end
+			if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+				-- input.Target is the GUI object that was clicked/touched
+				if input.Target == mainFrame then
+					dragging = true
+					dragStart = input.Position
+					startPos = mainFrame.Position
+					dragInput = input
+					-- For touch, InputChanged will be fired for the touch input; for mouse, InputChanged will be fired as well
+				end
+			end
+		end)
+
+		UserInputService.InputChanged:Connect(function(input)
+			if input == dragInput and dragging then
+				update(input)
+			end
+		end)
+
+		-- End dragging when input ends (mouse button up or touch end)
+		UserInputService.InputEnded:Connect(function(input, gameProcessed)
+			if input == dragInput then
+				dragging = false
+				dragInput = nil
+				dragStart = nil
+				startPos = nil
+			end
+		end)
+	end
+	-- End draggable
 
 	-- Animate GUI on open
 	tweenObject(mainFrame, Enum.EasingStyle.Circular, 0.3, Enum.EasingDirection.Out, {Size = UDim2.new(0, 489, 0, 344)})
