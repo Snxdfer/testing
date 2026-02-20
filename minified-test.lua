@@ -1,0 +1,1 @@
+local a=123;local b=100;local c="Hello World!"local d=true;local e=false;local f=function()return{a,b,c,d,e}end;local g=100;function calculateDifference(...)local h={...}for i,j in pairs(f())do print(i,j)end;return h[1]-h[2]end;print(calculateDifference(a,b))print(b-g)
