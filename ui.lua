@@ -1,4 +1,11 @@
-local Library = {version = 1.3}
+--[[
+	ui-engine-v2
+	version 1.4a
+	by Singularity (V3rm @ King Singularity) (Discord @ Singularity#5490)
+    modified by: 00Fazee 
+--]]
+
+local Library = {version = 1.4}
 local Config = {
     main_color = Color3.fromRGB(41, 74, 122),
     min_size = Vector2.new(400, 300),
@@ -6,9 +13,7 @@ local Config = {
     can_resize = true,
 }
 
-warn('running on Library version // ' .. tostring(Library.version) .. '\n\r\n\t         _                     _                    ___ \r\n\t  __  __(_)  ___  ____  ____ _(_)___  ___     _   _|__ \\\r\n\t / / / / /  / _ \\/ __ \\/ __ `/ / __ \\/ _ \\   | | / /_/ /\r\n\t/ /_/ / /  /  __/ / / / /_/ / / / / /  __/   | |/ / __/ \r\n\t\\__,_/_/   \\___/_/ /_/\\__, /_/_/ /_/\\___/    |___/____/ \r\n\t\t\t\t\t\t/____/                             \r\n\r\n\tby Singularity (V3rm @ King Singularity) (Discord @ Singularity#5490)\r\n\t[Edited version by KaterHub]\r\n')
-
--- ─── Prefabs (plantillas de UI) ───────────────────────────────────────────────
+warn('running on Library version // ' .. tostring(Library.version) .. '\n\r\n\t         _                     _                    ___ \r\n\t  __  __(_)  ___  ____  ____ _(_)___  ___     _   _|__ \\\r\n\t / / / / /  / _ \\/ __ \\/ __ `/ / __ \\/ _ \\   | | / /_/ /\r\n\t/ /_/ / /  /  __/ / / / /_/ / / / / /  __/   | |/ / __/ \r\n\t\\__,_/_/   \\___/_/ /_/\\__, /_/_/ /_/\\___/    |___/____/ \r\n\t\t\t\t\t\t/____/                             \r\n\r\n\tby Singularity (V3rm @ King Singularity) (Discord @ Singularity#5490)\r\n\t[Edited version by 00Fazee]\r\n')
 
 local _ScreenGui        = Instance.new('ScreenGui')
 local _Prefabs          = Instance.new('Frame')           -- contenedor de prefabs
