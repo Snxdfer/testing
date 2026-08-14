@@ -1,20 +1,6 @@
 --[[
 ⣿⣿⣿⣿⡿⠟⠛⠋⠉⠉⠉⠉⠉⠛⠛⠻⠿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
 ⣿⣿⠟⠈⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠀⠈⠙⠾⣿⣾⣿⣾⣿⣾⣿⣾⣿
-⠋⡁⠀⠀⠀⠀⠀⢀⠔⠁⠀⠀⢀⠠⠐⠈⠁⠀⠀⠁⠀⠈⠻⢾⣿⣾⣿⣾⣟⣿
-⠊⠀⠀⠀⠀⢀⠔⠃⠀⠀⠠⠈⠁⠀⠀⠀⠀⠀⠀⠆⠀⠀⠄⠀⠙⣾⣷⣿⢿⣿
-⠀⠀⠀⠀⡠⠉⠀⠀⠀⠀⠠⢰⢀⠀⠀⠀⠀⠀⠀⢰⠀⠀⠈⡀⠀⠈⢿⣟⣿⣿
-⠀⠀⢀⡜⣐⠃⠀⠀⠀⣠⠁⡄⠰⠀⠀⠀⠀⠀⠀⠐⠀⠀⠀⠰⠀⠀⠈⢿⣿⣿
-⠀⢠⠆⢠⡃⠀⠀⠀⣔⠆⡘⡇⢘⠀⠀⠀⠀⠀⠀⠈⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿
-⢀⡆⠀⡼⢣⠀⢀⠌⢸⢠⠇⡇⢘⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣿
-⣼⣃⠀⠁⢸⢀⠎⠀⢸⠎⠀⢸⢸⡄⠀⠀⠀⠀⠀₀⢀⠀⠀⠀⠀⠀⠀⠀⠀⣿
-⠃⡏⠟⣷⣤⠁⠀⠀⠸⠀⠀⡾⢀⢇⠀⠀⠀⠀⠀⠄⠸⠀⠀⠀⠀⠄⠀⠀⠀⣿
-⠀⠀⣀⣿⣿⣿⢦⠀⠀⠀⠀⡧⠋⠘⡄⠀⠀⠀⠀⡇⢸⠀⠀⠠⡘⠀⠀⠀⢠⣿
-⠈⠀⢿⢗⡻⠃⠀⠀⠀⠀⠀⠀⠀⠀⠱⡀⠀⠀⢰⠁⡇⠀⠀⢨⠃⡄⢀⠀⣸⣿
-⠀⠀⠀⠈⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣱⠀⠀⡎⠸⠁⠀⢀⠞⡸⠀⡜⢠⣿⣿
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣺⣿⣧⢰⣧⡁⡄⠀⡞⠰⠁⡸⣠⣿⣿⣿
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠠⡿⠏⣿⠟⢁⠾⢛⣧⢼⠁⠀⠀⢰⣿⡿⣷⣿
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠡⠄⠀⡠⣚⡷⠊⠀⠀⠀⣿⡿⣿⡿⣿
 @ Nurysium UI Library (Fixed & Improved)
 ]]
 
@@ -28,16 +14,6 @@ local Debris              = cloneref(game:GetService('Debris'))
 
 local LocalPlayer = Players.LocalPlayer
 
--- CORRECCIÓN #1: Se eliminó `local mouse = LocalPlayer:GetMouse()`
--- GetMouse() está deprecated. Ahora se usa UserInputService:GetMouseLocation()
-
--- CORRECCIÓN #2: Connections ya no es un objeto con método propio.
--- El original tenía varios problemas:
---   a) Typo: "abadone" en vez de "abandon"
---   b) `for _, connection in Connections` iteraba sobre el propio método
---   c) `connection = nil` dentro del bucle no elimina la entrada de la tabla
---   d) `Connections.abadone()` (sin :) pasaba nil como self, aunque funcionaba
---      de casualidad porque el cuerpo usaba `Connections` directamente
 local Connections = {}
 
 local function abandonConnections()
@@ -73,15 +49,11 @@ function ConfigsController.save(file_name: string, config: any)
     if not isfolder('Nurysium/configs') then makefolder('Nurysium/configs') end
 
     local ok, encoded = pcall(HttpService.JSONEncode, HttpService, config)
-    if not ok then return end  -- MEJORA: guard ante tablas no serializables
+    if not ok then return end
 
     writefile(`Nurysium/configs/{file_name}.json`, encoded)
 end
 
--- CORRECCIÓN #3: ConfigsController.load ahora siempre devuelve una tabla.
--- Antes, cuando el archivo no existía llamaba a save() y hacía `return` sin valor,
--- dejando `current_config` como nil y forzando el check posterior.
--- Ahora también envuelve el decode en pcall para no crashear con JSON corrupto.
 function ConfigsController.load(file_name: string, default_config: any): any
     local path = 'Nurysium/configs/' .. file_name .. '.json'
 
@@ -98,7 +70,6 @@ function ConfigsController.load(file_name: string, default_config: any): any
 
     local ok, decoded = pcall(HttpService.JSONDecode, HttpService, raw)
     if not ok then
-        -- MEJORA: archivo corrupto → se sobreescribe con el default en vez de crashear
         ConfigsController.save(file_name, default_config)
         return default_config or {}
     end
@@ -106,7 +77,6 @@ function ConfigsController.load(file_name: string, default_config: any): any
     return decoded
 end
 
--- CORRECCIÓN #4: load() ahora siempre devuelve tabla, se eliminó el check posterior
 Library.flags = ConfigsController.load(game.GameId, {})
 
 -- ─── UIManager ──────────────────────────────────────────────────────────────
@@ -121,7 +91,6 @@ function UIManager.refresh_tabs(Tab: TextButton)
     local tabTitle = Tab:FindFirstChild('Title')
     local tabIcon  = Tab:FindFirstChild('Icon')
 
-    -- MEJORA: guards por si los hijos no existen
     if tabTitle then
         TweenService:Create(tabTitle, TweenInfo.new(1, Enum.EasingStyle.Exponential), {
             TextTransparency = 0,
@@ -167,7 +136,7 @@ function UIManager.animate_sections(right_section: ScrollingFrame, left_section:
     local right_layout = right_section:FindFirstChildOfClass('UIListLayout')
     local left_layout  = left_section:FindFirstChildOfClass('UIListLayout')
 
-    if not right_layout or not left_layout then return end  -- MEJORA: guard
+    if not right_layout or not left_layout then return end
 
     right_layout.Padding = UDim.new(0, -6)
     left_layout.Padding  = UDim.new(0, -6)
@@ -178,8 +147,6 @@ end
 
 -- ─── Library helpers ────────────────────────────────────────────────────────
 
--- CORRECCIÓN #5: Definida con `.` en vez de `:` para ser consistente con cómo
--- se llama desde normalize_size (sin self)
 function Library.get_screen_scale()
     if Library.disconnected then return end
 
@@ -189,12 +156,6 @@ function Library.get_screen_scale()
     Library.scale = size + math.max(0.65 - size, 0)
 end
 
--- CORRECCIÓN #6: Renombrada de `Library:changed()` a `Library:onDestroyed(callback)`.
--- El original tenía un bug silencioso: estaba definida con `:` pero llamada con `.`
---   Library.changed(function() ... end)
--- Esto pasaba la función como `self` en vez de como argumento, luego hacía
---   Library.ui.AncestryChanged:Once(self)   ← self era la función callback → "funcionaba"
---   por coincidencia pero era imposible de mantener.
 function Library:onDestroyed(callback: () -> ())
     Library.ui.AncestryChanged:Once(callback)
 end
@@ -239,7 +200,6 @@ function Library.normalize_size()
     task.delay(1, function() Library.scale_cooldown = false end)
 end
 
--- MEJORA: Parámetro renombrado de `event` a `gameProcessed` (nombre estándar de Roblox)
 UserInputService.InputBegan:Connect(function(input: InputObject, gameProcessed: boolean)
     if Library.disconnected  then return end
     if input.KeyCode ~= Enum.KeyCode.Insert then return end
@@ -304,7 +264,6 @@ function Library:create()
     Tabs.ScrollBarThickness      = 0
     Tabs.TopImage                = ''
     Tabs.CanvasSize              = UDim2.new(0, 0, 0, 0)
-    -- MEJORA: CanvasSize se ajusta automáticamente al contenido
     Tabs.AutomaticCanvasSize     = Enum.AutomaticSize.Y
 
     TabsLayout.Parent              = Tabs
@@ -364,8 +323,6 @@ function Library:create()
     Safemode_Corner.CornerRadius = UDim.new(0, 6)
     Safemode_Corner.Parent       = Safemode
 
-    -- MEJORA: función auxiliar para animar el DisconnectIcon,
-    -- eliminando duplicación entre MouseEnter/MouseLeave y TouchTap/MouseButton1Click
     local function animateIcon(transparency: number, rotation: number, style: Enum.EasingStyle)
         TweenService:Create(DisconnectIcon,
             TweenInfo.new(0.45, style, Enum.EasingDirection.InOut), {
@@ -404,7 +361,7 @@ function Library:create()
 
             task.delay(1, function()
                 Debris:AddItem(Nurysium, 0)
-                abandonConnections()  -- CORRECCIÓN: usa la función corregida
+                abandonConnections()
             end)
         end)
     end
@@ -420,9 +377,8 @@ function Library:create()
     end)
 
     Safemode.MouseButton1Click:Connect(triggerSafemode)
-    Safemode.TouchTap:Connect(triggerSafemode)  -- MEJORA: misma función, sin duplicado
+    Safemode.TouchTap:Connect(triggerSafemode)
 
-    -- CORRECCIÓN #6 aplicada: se llama con : y recibe el callback correctamente
     Library:onDestroyed(function()
         table.clear(Library.flags)
         abandonConnections()
@@ -498,7 +454,7 @@ function Library:create()
         local TabIcon   = Instance.new('ImageLabel')
 
         Tab.AutoButtonColor   = false
-        Tab.Name              = tostring(math.random())  -- MEJORA: tostring explícito
+        Tab.Name              = tostring(math.random())
         Tab.Parent            = Library.ui.Background.Tabs
         Tab.BackgroundColor3  = Color3.fromRGB(21, 21, 21)
         Tab.BackgroundTransparency = 1
@@ -530,7 +486,6 @@ function Library:create()
             s.ScrollBarThickness     = 0
             s.TopImage               = ''
             s.CanvasSize             = UDim2.new(0, 0, 0, 0)
-            -- MEJORA: scroll automático al agregar componentes
             s.AutomaticCanvasSize    = Enum.AutomaticSize.Y
             s.Visible                = false
             return s
@@ -558,7 +513,7 @@ function Library:create()
         end
 
         Tab.MouseButton1Up:Connect(onTabSelected)
-        Tab.TouchTap:Connect(onTabSelected)  -- MEJORA: misma función
+        Tab.TouchTap:Connect(onTabSelected)
 
         TabTitle.Name                = 'Title'
         TabTitle.Parent              = Tab
@@ -590,7 +545,10 @@ function Library:create()
 
         local ModuleController = {}
 
-        function ModuleController:create_module(callback: (boolean) -> ())
+        -- FIX: 'callback' ahora es opcional. El script principal llama
+        -- create_module({text, flag, side}) sin pasar ningún callback,
+        -- lo que antes causaba "attempt to call a nil value" en update_module.
+        function ModuleController:create_module(callback: ((boolean) -> ())?)
             local Module       = Instance.new('Frame')
             local ModCorner    = Instance.new('UICorner')
             local ModTab       = Instance.new('TextButton')
@@ -673,7 +631,12 @@ function Library:create()
                     Library.flags[self.flag] = not Library.flags[self.flag]
                 end
 
-                callback(Library.flags[self.flag])
+                -- FIX #PRINCIPAL: guard antes de invocar callback.
+                -- El script principal crea módulos sin pasar callback,
+                -- causaba "attempt to call a nil value" en esta línea.
+                if callback then
+                    callback(Library.flags[self.flag])
+                end
 
                 if Library.flags[self.flag] then
                     TweenService:Create(ModTab, TweenInfo.new(1.2, Enum.EasingStyle.Exponential), {
@@ -704,7 +667,7 @@ function Library:create()
             end
 
             ModTab.MouseButton1Click:Connect(onModuleClick)
-            ModTab.TouchTap:Connect(onModuleClick)  -- MEJORA: misma función
+            ModTab.TouchTap:Connect(onModuleClick)
 
             -- ── SettingsController ─────────────────────────────────────────
 
@@ -805,7 +768,6 @@ function Library:create()
                 local DraggerCorner = Instance.new('UICorner')
                 local SliderTitle  = Instance.new('TextLabel')
 
-                -- MEJORA: soporte de rango personalizable (self.min / self.max)
                 local min_val = self.min or 0
                 local max_val = self.max or 100
 
@@ -841,7 +803,6 @@ function Library:create()
                 Hitbox.Size              = UDim2.new(1, 0, 0, 10)
                 Hitbox.Text              = ''
 
-                -- MEJORA: posición inicial calculada con rango correcto
                 local initial_ratio = math.clamp((self.value - min_val) / (max_val - min_val), 0, 1)
 
                 Dragger.Name             = 'Dragger'
@@ -878,8 +839,6 @@ function Library:create()
                     Dragger.Size    = UDim2.new(ratio, 0, 0, 10)
                 end
 
-                -- CORRECCIÓN #7: se usa UserInputService en vez del mouse deprecated
-                -- MEJORA: soporte de rango + callback al cambiar valor
                 local function update_slider()
                     local mouseX = UserInputService:GetMouseLocation().X
                     local output = math.clamp(
@@ -904,8 +863,6 @@ function Library:create()
 
                 local slider_active = false
 
-                -- CORRECCIÓN #8: el bucle comprueba Library.disconnected para
-                -- evitar que quede corriendo tras desconectarse el UI
                 local function activate_slider()
                     slider_active = true
                     while slider_active and not Library.disconnected do
@@ -926,7 +883,7 @@ function Library:create()
                 end)
             end
 
-            function SettingsController:create_dropdown(callback: (string) -> ())
+            function SettingsController:create_dropdown(callback: ((string) -> ())?)
                 local Dropdown    = Instance.new('Frame')
                 local DDCorner    = Instance.new('UICorner')
                 local ScrollFrame = Instance.new('ScrollingFrame')
@@ -1043,12 +1000,17 @@ function Library:create()
                         }):Play()
 
                         Library.flags[self.flag] = value
-                        callback(Library.flags[self.flag])
+
+                        -- FIX: callback también es opcional en create_dropdown
+                        if callback then
+                            callback(Library.flags[self.flag])
+                        end
+
                         ConfigsController.save(game.GameId, Library.flags)
                     end
 
                     Mode.MouseButton1Click:Connect(onModeSelect)
-                    Mode.TouchTap:Connect(onModeSelect)  -- MEJORA: misma función
+                    Mode.TouchTap:Connect(onModeSelect)
                 end
 
                 ScrollPad.Parent     = ScrollFrame
